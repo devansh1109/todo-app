@@ -1,0 +1,55 @@
+# values.yaml
+namespace: todo-app
+
+postgres:
+  enabled: true
+  image: postgres:15-alpine
+  replicas: 1
+  port: 5432
+  database: todo_db
+  username: postgres
+  password: postgres123
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+backend:
+  enabled: true
+  image: todo-backend:latest
+  replicas: 2
+  port: 5000
+  imagePullPolicy: Never
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 70
+
+frontend:
+  enabled: true
+  image: todo-frontend:latest
+  replicas: 2
+  port: 80
+  imagePullPolicy: Never
+  service:
+    type: NodePort
+    nodePort: 30000
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"

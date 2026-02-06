@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+  namespace: {{ .Values.namespace }}
+data:
+  DB_HOST: postgres
+  DB_PORT: "{{ .Values.postgres.port }}"
+  DB_NAME: {{ .Values.postgres.database }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: {{ .Values.namespace }}
+data:
+  init.sql: |
+{{ .Files.Get "init.sql" | indent 4 }}
