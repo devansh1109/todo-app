@@ -21,4 +21,3 @@ INSERT INTO todos (title, description, completed) VALUES
     ('Build Frontend', 'Create React application with modern UI', false),
     ('Write Documentation', 'Add README with architecture and deployment instructions', false);
 
--- Made with Bob

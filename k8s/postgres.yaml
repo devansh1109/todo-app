@@ -36,6 +36,15 @@ spec:
               name: todo-secret
               key: DB_PASSWORD
 
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
+      volumes:
+      - name: init-script
+        configMap:
+          name: postgres-init
+
 ---
 apiVersion: v1
 kind: Service

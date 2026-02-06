@@ -4,7 +4,7 @@ import './App.css';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 
-const API_URL = 'http://localhost:5000/api/todos';
+const API_URL = '/api/todos';
 
 function App() {
   const [todos, setTodos] = useState([]);
