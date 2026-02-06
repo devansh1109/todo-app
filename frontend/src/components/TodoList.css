@@ -1,0 +1,25 @@
+.todo-list {
+  margin-top: 30px;
+}
+
+.todo-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Made with Bob */

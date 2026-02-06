@@ -1,0 +1,208 @@
+.todo-item {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease-out;
+}
+
+.todo-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+.todo-item.completed {
+  background: #f8f9fa;
+  opacity: 0.7;
+}
+
+.todo-item.completed .todo-title {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.todo-item.editing {
+  background: #f8f9fa;
+  border-color: #667eea;
+}
+
+.todo-content {
+  display: flex;
+  gap: 15px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.todo-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-top: 2px;
+  accent-color: #667eea;
+}
+
+.todo-text {
+  flex: 1;
+}
+
+.todo-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.todo-description {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.todo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.todo-date {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 10px;
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.btn-edit:hover {
+  opacity: 1;
+  background: #e3f2fd;
+}
+
+.btn-delete:hover {
+  opacity: 1;
+  background: #ffebee;
+}
+
+.edit-form {
+  width: 100%;
+}
+
+.edit-input,
+.edit-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  margin-bottom: 10px;
+}
+
+.edit-input:focus,
+.edit-textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.edit-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-save {
+  background: #667eea;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #5568d3;
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.btn-cancel:hover {
+  background: #d0d0d0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .todo-item {
+    padding: 15px;
+  }
+
+  .todo-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .todo-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+
+  .todo-actions {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .todo-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+/* Made with Bob */
