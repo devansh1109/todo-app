@@ -1,5 +1,11 @@
 -- Create database (run this separately if needed)
--- CREATE DATABASE tododb;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'tododb') THEN
+        CREATE DATABASE tododb;
+    END IF;
+END
+$$;
 
 -- Connect to tododb and create table
 CREATE TABLE IF NOT EXISTS todos (

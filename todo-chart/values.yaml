@@ -1,5 +1,5 @@
 # values.yaml
-namespace: todo-app. #common namespace to create a network and communicate
+namespace: todo-app #common namespace to create a network and communicate
 
 postgres:
   enabled: true
