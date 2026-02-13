@@ -10,6 +10,27 @@ spec:
     name: backend
   minReplicas: {{ .Values.backend.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.backend.autoscaling.maxReplicas }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.backend.autoscaling.scaleDownStabilizationWindowSeconds }}
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: {{ .Values.backend.autoscaling.scaleDownPeriodSeconds }}
+      - type: Pods
+        value: 2
+        periodSeconds: {{ .Values.backend.autoscaling.scaleDownPeriodSeconds }}
+      selectPolicy: Max  #Decide from the 2 policies which is more aggressive and has most pods dropped and use that
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.backend.autoscaling.scaleUpStabilizationWindowSeconds }}
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: {{ .Values.backend.autoscaling.scaleUpPeriodSeconds }}
+      - type: Pods
+        value: 4
+        periodSeconds: {{ .Values.backend.autoscaling.scaleUpPeriodSeconds }}
+      selectPolicy: Max
   metrics:
   - type: Resource
     resource:

@@ -4,13 +4,14 @@ metadata:
   name: backend-hpa
   namespace: todo-app
 spec:
-  scaleTargetRef:
+  scaleTargetRef:    #Specifies which target resource should be scaled
     apiVersion: apps/v1
     kind: Deployment
     name: backend
   minReplicas: 2    # Minimum 2 pods
   maxReplicas: 10   # Maximum 10 pods
-  metrics:
+  #Min/max replicas changes based on requirement and incoming traffic
+  metrics:    #This yaml is tracking 2 different metrices cpu utilization and memory utlization if even one of them exceeds the defined threshold then it will trigger scalling of the defined resource pod
   - type: Resource
     resource:
       name: cpu

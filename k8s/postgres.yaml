@@ -18,19 +18,20 @@ spec:
       - name: postgres
         image: postgres:15-alpine
         ports:
-        - containerPort: 5432
+        - containerPort: 5432 #default postgres port
         env:
-        - name: POSTGRES_DB
+        - name: POSTGRES_DB #Initialises a new db on first startup
           valueFrom:
             configMapKeyRef:
               name: todo-config
-              key: DB_NAME
-        - name: POSTGRES_USER
+              key: DB_NAME   #gets the DB_NAME from the config.yaml file which is "todo_db".
+              #Advantage of using configmap can be seen here as when we change our db name or user we just need to change in one file which is config.yaml and not every file that uses it.
+        - name: POSTGRES_USER #Initialises a new user on first startup
           valueFrom:
             secretKeyRef:
               name: todo-secret
               key: DB_USER
-        - name: POSTGRES_PASSWORD
+        - name: POSTGRES_PASSWORD #Using the default password should be changes during production
           valueFrom:
             secretKeyRef:
               name: todo-secret
@@ -40,10 +41,16 @@ spec:
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d
           readOnly: true
+        - name: postgres-data  # Persistent storage of the data so its not lost when the pod restarts
+          mountPath: /var/lib/postgresql/data  
+
       volumes:
       - name: init-script
         configMap:
-          name: postgres-init
+          name: postgres-init #Refers to the configmap defined in config.yaml file which contains the init.sql file that will be used to create the table on startup
+      - name: postgres-data  # ← MISSING in current config
+        persistentVolumeClaim:
+          claimName: postgres-pvc  # ← Persistent storage
 
 ---
 apiVersion: v1

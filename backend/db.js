@@ -21,4 +21,3 @@ pool.on('error', (err) => {
 
 module.exports = pool;
 
-// Made with Bob

@@ -17,22 +17,22 @@ spec:
       containers:
       - name: backend
         image: todo-backend:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Never. #Uses local images instead of pulling from registry
         ports:
-        - containerPort: 5000
+        - containerPort: 5000. #Exposes to 5000 within the container
         resources:  
           requests:
-            cpu: 100m      
+            cpu: 100m     #0.1 cpu core 
             memory: 128Mi  
           limits:
-            cpu: 500m      
+            cpu: 500m      #0.5 cpu core
             memory: 512Mi
         env:
         - name: PORT
           value: "5000"
         - name: DB_HOST
           valueFrom:
-            configMapKeyRef:
+            configMapKeyRef:  #For non sensitive data
               name: todo-config
               key: DB_HOST
         - name: DB_PORT
@@ -47,7 +47,7 @@ spec:
               key: DB_NAME
         - name: DB_USER
           valueFrom:
-            secretKeyRef:
+            secretKeyRef:  #For sensitive data
               name: todo-secret
               key: DB_USER
         - name: DB_PASSWORD
@@ -58,11 +58,11 @@ spec:
 
 ---
 apiVersion: v1
-kind: Service
+kind: Service   #Provides network endpoint for backend pods
 metadata:
   name: backend
   namespace: todo-app
-spec:
+spec:      #By default the type is ClusterIP since it needs to be accessed within the cluster itself
   selector:
     app: backend
   ports:
@@ -89,16 +89,16 @@ spec:
         image: todo-frontend:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 80
+        - containerPort: 80. #Port to access within the cluster
 
 ---
 apiVersion: v1
-kind: Service
+kind: Service  #Serve the static files using nginx defined in the Dockerfile
 metadata:
   name: frontend
   namespace: todo-app
 spec:
-  type: NodePort
+  type: NodePort.   #Type is nodeport so that we can access it from the web using the nodeport values
   selector:
     app: frontend
   ports:
