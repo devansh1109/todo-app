@@ -103,7 +103,7 @@ curl http://localhost:30000/api/todos
 curl http://localhost:30000/health
 ```
 
-### How to run stress testing
+## How to run stress testing
 
 After deployment, you can run stress testing using the following command:
 
@@ -128,3 +128,12 @@ jmeter -t "Graph Results.jmx"  #This runs the stress testing and opens a GUI
 ``` bash
 jmeter -n -t "Graph Results.jmx"  #This will run the stress testing without GUI.
 ```
+
+
+## License
+
+MIT License
+
+Copyright (c) 2026 Devansh Verma
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for full details.
