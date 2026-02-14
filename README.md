@@ -31,7 +31,8 @@ A full-stack Todo List application built with Node.js, React, and PostgreSQL. Th
 
 Clone the repo:
 
-```git clone https://github.com/devansh1109/todo-app.git ```
+``` bash
+    git clone https://github.com/devansh1109/todo-app.git ```
 
 
 Set Up Backend
