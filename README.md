@@ -40,21 +40,18 @@ git clone https://github.com/devansh1109/todo-app.git
 
 ``` bash
 cd backend
-```
-``` bash
 npm install
 ```
 
 ### Create a .env file in the backend directory with the following content:
-``` bash
 
+``` env
 PORT=5000
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=tododb
 DB_USER=postgres
 DB_PASSWORD=yourpassword
-
 ```
 
 ### Set Up Frontend
@@ -65,8 +62,10 @@ npm install
 ```
 
 ### Create a values-secret.yaml file under todo-chart root:
-add the following content:
-``` bash
+
+Add the following content:
+
+``` yaml
 postgres:
   password: your-postgres-password
 ```
@@ -76,36 +75,49 @@ postgres:
 In root directory (todo-app) run:
 
 ``` bash
+#Build docker images
 docker-compose build
-```
-``` bash
+
+#Deploy with helm
 helm install todo-app ./todo-chart \
--f ./todo-chart/values-secret.yaml \
--f ./todo-chart/values.yaml \
--n todo-app --create-namespace
+  -f ./todo-chart/values-secret.yaml \
+  -f ./todo-chart/values.yaml \
+  -n todo-app --create-namespace
 ```
+
+Access the application at: http://localhost:30000
 
 ## How to test
 
 To test the application, you can use the following endpoints:
-GET /api/todos - Get all todos
-GET /health - Get health 
+- GET /api/todos - Get all todos
+- GET /health - Get health 
 
-## How to run stress testing
+### Example Request
+
+```bash
+# Get all todos
+curl http://localhost:30000/api/todos
+
+# Health check
+curl http://localhost:30000/health
+```
+
+### How to run stress testing
 
 After deployment, you can run stress testing using the following command:
 
-In 1st terminal run:
+**Terminal 1 - Watch pods**
 
 ``` bash
 kubectl get pods -n todo-app -w
 ```
 
-In 2nd terminal run:
+**Terminal 2 - Watch autoscaling of pods**
 ``` bash
 kubectl get hpa -n todo-app -w.  #To check for auto scaling of pods 
 ```
-In 3rd terminal run:
+**Terminal 3 - Run load test**
 
 ### For Stress testing with GUI
 ``` bash
