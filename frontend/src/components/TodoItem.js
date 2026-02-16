@@ -117,4 +117,3 @@ function TodoItem({ todo, onToggle, onUpdate, onDelete }) {
 
 export default TodoItem;
 
-// Made with Bob

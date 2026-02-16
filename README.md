@@ -115,7 +115,7 @@ kubectl get pods -n todo-app -w
 
 **Terminal 2 - Watch autoscaling of pods**
 ``` bash
-kubectl get hpa -n todo-app -w.  #To check for auto scaling of pods 
+kubectl get hpa -n todo-app -w  #To check for auto scaling of pods 
 ```
 **Terminal 3 - Run load test**
 

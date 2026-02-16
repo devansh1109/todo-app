@@ -51,4 +51,3 @@ function TodoList({ todos, onToggle, onUpdate, onDelete }) {
 
 export default TodoList;
 
-// Made with Bob

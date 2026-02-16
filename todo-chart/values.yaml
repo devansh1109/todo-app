@@ -8,7 +8,6 @@ postgres:
   port: 5432
   database: todo_db
   username: postgres
-  password: "" 
   resources:
     requests:
       memory: "256Mi"

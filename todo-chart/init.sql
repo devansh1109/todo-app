@@ -1,8 +1,8 @@
 -- Create database (run this separately if needed)
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'tododb') THEN
-        CREATE DATABASE tododb;
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'todo_db') THEN
+        CREATE DATABASE todo_db;
     END IF;
 END
 $$;
