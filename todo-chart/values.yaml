@@ -1,4 +1,6 @@
-# values.yaml
+# Stores the default values that can be used across the helm chart
+
+
 namespace: todo-app #common namespace to create a network and communicate
 
 postgres:

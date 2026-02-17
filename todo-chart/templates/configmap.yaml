@@ -11,8 +11,8 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-init
+  name: postgres-init  #Database initialization
   namespace: {{ .Values.namespace }}
 data:
   init.sql: |
-{{ .Files.Get "init.sql" | indent 4 }}
+{{ .Files.Get "init.sql" | indent 4 }} 

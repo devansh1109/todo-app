@@ -1,3 +1,5 @@
+#Stores charts metadata and its basic informations
+
 apiVersion: v2
 name: todo-app
 description: A Helm chart for Todo List microservices application
