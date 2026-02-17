@@ -129,6 +129,11 @@ jmeter -t "Graph Results.jmx"  #This runs the stress testing and opens a GUI
 jmeter -n -t "Graph Results.jmx"  #This will run the stress testing without GUI.
 ```
 
+### Issues
+
+-Persistent storage is applied for Docker images and not kubernetes.
+-Once the kubernetes cluster is down the data of the session will be deleted
+-Faced issues in creating persistent storage for a cluster session
 
 ## License
 
