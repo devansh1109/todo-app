@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const pool = require('./db');
+const authRoutes = require('./routes_auth');
+const authenticateToken = require('./auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,16 +14,28 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// ============================================
+// PUBLIC ROUTES (No Authentication Required)
+// ============================================
+
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Todo API is running' });
+  res.json({ status: 'OK', message: 'Todo API is running with JWT Authentication' });
 });
 
-// GET all todos
-app.get('/api/todos', async (req, res) => {
+// Authentication routes (register, login)
+app.use('/api/auth', authRoutes);
+
+// ============================================
+// PROTECTED ROUTES (Authentication Required)
+// ============================================
+
+// GET all todos for authenticated user
+app.get('/api/todos', authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM todos ORDER BY created_at DESC'
+      'SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.user.id]
     );
     res.json({
       success: true,
@@ -38,19 +52,19 @@ app.get('/api/todos', async (req, res) => {
   }
 });
 
-// GET single todo by ID
-app.get('/api/todos/:id', async (req, res) => {
+// GET single todo by ID (only if it belongs to the user)
+app.get('/api/todos/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      'SELECT * FROM todos WHERE id = $1',
-      [id]
+      'SELECT * FROM todos WHERE id = $1 AND user_id = $2',
+      [id, req.user.id]
     );
     
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Todo not found'
+        message: 'Todo not found or access denied'
       });
     }
     
@@ -68,8 +82,8 @@ app.get('/api/todos/:id', async (req, res) => {
   }
 });
 
-// POST create new todo
-app.post('/api/todos', async (req, res) => {
+// POST create new todo for authenticated user
+app.post('/api/todos', authenticateToken, async (req, res) => {
   try {
     const { title, description } = req.body;
     
@@ -81,8 +95,8 @@ app.post('/api/todos', async (req, res) => {
     }
     
     const result = await pool.query(
-      'INSERT INTO todos (title, description, completed) VALUES ($1, $2, $3) RETURNING *',
-      [title.trim(), description || '', false]
+      'INSERT INTO todos (user_id, title, description, completed) VALUES ($1, $2, $3, $4) RETURNING *',
+      [req.user.id, title.trim(), description || '', false]
     );
     
     res.status(201).json({
@@ -100,28 +114,28 @@ app.post('/api/todos', async (req, res) => {
   }
 });
 
-// PUT update todo
-app.put('/api/todos/:id', async (req, res) => {
+// PUT update todo (only if it belongs to the user)
+app.put('/api/todos/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, completed } = req.body;
     
-    // Check if todo exists
+    // Check if todo exists and belongs to user
     const checkResult = await pool.query(
-      'SELECT * FROM todos WHERE id = $1',
-      [id]
+      'SELECT * FROM todos WHERE id = $1 AND user_id = $2',
+      [id, req.user.id]
     );
     
     if (checkResult.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Todo not found'
+        message: 'Todo not found or access denied'
       });
     }
     
     const result = await pool.query(
-      'UPDATE todos SET title = $1, description = $2, completed = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *',
-      [title, description, completed, id]
+      'UPDATE todos SET title = $1, description = $2, completed = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 AND user_id = $5 RETURNING *',
+      [title, description, completed, id, req.user.id]
     );
     
     res.json({
@@ -139,20 +153,20 @@ app.put('/api/todos/:id', async (req, res) => {
   }
 });
 
-// PATCH toggle todo completion status
-app.patch('/api/todos/:id/toggle', async (req, res) => {
+// PATCH toggle todo completion status (only if it belongs to the user)
+app.patch('/api/todos/:id/toggle', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     
     const result = await pool.query(
-      'UPDATE todos SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *',
-      [id]
+      'UPDATE todos SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND user_id = $2 RETURNING *',
+      [id, req.user.id]
     );
     
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Todo not found'
+        message: 'Todo not found or access denied'
       });
     }
     
@@ -171,20 +185,20 @@ app.patch('/api/todos/:id/toggle', async (req, res) => {
   }
 });
 
-// DELETE todo
-app.delete('/api/todos/:id', async (req, res) => {
+// DELETE todo (only if it belongs to the user)
+app.delete('/api/todos/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     
     const result = await pool.query(
-      'DELETE FROM todos WHERE id = $1 RETURNING *',
-      [id]
+      'DELETE FROM todos WHERE id = $1 AND user_id = $2 RETURNING *',
+      [id, req.user.id]
     );
     
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: 'Todo not found'
+        message: 'Todo not found or access denied'
       });
     }
     
@@ -203,6 +217,10 @@ app.delete('/api/todos/:id', async (req, res) => {
   }
 });
 
+// ============================================
+// ERROR HANDLERS
+// ============================================
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
@@ -215,7 +233,17 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
-  console.log(`API endpoint: http://localhost:${PORT}/api/todos`);
+  console.log(`\n🔐 Authentication Endpoints:`);
+  console.log(`  - POST http://localhost:${PORT}/api/auth/register`);
+  console.log(`  - POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`\n🔒 Protected API Endpoints (require JWT token):`);
+  console.log(`  - GET    http://localhost:${PORT}/api/todos`);
+  console.log(`  - POST   http://localhost:${PORT}/api/todos`);
+  console.log(`  - GET    http://localhost:${PORT}/api/todos/:id`);
+  console.log(`  - PUT    http://localhost:${PORT}/api/todos/:id`);
+  console.log(`  - PATCH  http://localhost:${PORT}/api/todos/:id/toggle`);
+  console.log(`  - DELETE http://localhost:${PORT}/api/todos/:id`);
+  console.log(`\n💡 Don't forget to set JWT_SECRET in your .env file!`);
 });
 
-// Made with Bob
+// Made with Bob - Now with JWT Authentication!

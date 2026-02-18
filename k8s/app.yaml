@@ -55,6 +55,11 @@ spec:
             secretKeyRef:
               name: todo-secret
               key: DB_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: todo-secret
+              key: JWT_SECRET
 
 ---
 apiVersion: v1

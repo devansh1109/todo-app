@@ -2,16 +2,18 @@
 
 apiVersion: v2
 name: todo-app
-description: A Helm chart for Todo List microservices application
+description: A Helm chart for Todo List microservices application with JWT Authentication
 type: application
-version: 1.0.0
-appVersion: "1.0.0"
+version: 2.0.1
+appVersion: "2.0.1"
 keywords:
   - todo
   - microservices
   - nodejs
   - react
   - postgresql
+  - jwt
+  - authentication
 maintainers:
   - name: Devansh Verma
     email: devanshverma911@gmail.com

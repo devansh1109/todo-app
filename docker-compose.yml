@@ -36,6 +36,7 @@ services:
       DB_NAME: todo_db
       DB_USER: postgres
       DB_PASSWORD: postgres
+      JWT_SECRET: L4ncBIfGALPwbqYkWTNxq7PpmYjN1eihDUevziwUBPJ
     networks:
       - todo-network
     restart: on-failure

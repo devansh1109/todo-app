@@ -7,9 +7,20 @@ BEGIN
 END
 $$;
 
--- Connect to tododb and create table
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Todos table with user_id foreign key
 CREATE TABLE IF NOT EXISTS todos (
     id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     completed BOOLEAN DEFAULT FALSE,
@@ -17,13 +28,8 @@ CREATE TABLE IF NOT EXISTS todos (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create index on completed status for faster queries
+-- Create indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_todos_user_id ON todos(user_id);
 CREATE INDEX IF NOT EXISTS idx_todos_completed ON todos(completed);
-
--- Insert sample data
-INSERT INTO todos (title, description, completed) VALUES
-    ('Setup Development Environment', 'Install Node.js, PostgreSQL, and Docker', true),
-    ('Create Backend API', 'Build REST API with Express and PostgreSQL', false),
-    ('Build Frontend', 'Create React application with modern UI', false),
-    ('Write Documentation', 'Add README with architecture and deployment instructions', false);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 

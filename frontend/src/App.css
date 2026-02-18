@@ -1,3 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
 .App {
   max-width: 800px;
   margin: 0 auto;
@@ -10,6 +17,52 @@
   padding: 40px;
   min-height: 600px;
 }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-content > div:first-child {
+  text-align: left;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: 1px solid #e0e0e0;
+}
+
+.user-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.logout-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 
 .app-header {
   text-align: center;
