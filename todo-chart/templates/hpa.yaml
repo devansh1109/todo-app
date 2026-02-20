@@ -32,15 +32,27 @@ spec:
         periodSeconds: {{ .Values.backend.autoscaling.scaleUpPeriodSeconds }}
       selectPolicy: Max
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
+  # - type: Resource
+  #   resource:
+  #     name: cpu
+  #     target:
+  #       type: Utilization
+  #       averageUtilization: {{ .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
+  # - type: Resource
+  #   resource:
+  #     name: memory
+  #     target:
+  #       type: Utilization
+  #       averageUtilization: {{ .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+
+{{- if .Values.backend.autoscaling.customMetrics.enabled }}
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
       target:
-        type: Utilization
-        averageUtilization: {{ .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: {{ .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+        type: AverageValue
+        averageValue: "{{ .Values.backend.autoscaling.customMetrics.targetRequestsPerSecond }}"
+{{- end }}
+
+# Made with Bob

@@ -1,0 +1,21 @@
+{{- if .Values.backend.autoscaling.customMetrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-adapter-config
+  namespace: {{ .Values.namespace }}
+data:
+  config.yaml: |
+    rules:
+    # Rule to expose http_requests_per_second metric
+    - seriesQuery: 'http_requests_per_second{namespace="{{ .Values.namespace }}",pod=~"backend-.*"}'
+      resources:
+        overrides:
+          namespace: {resource: "namespace"}
+          pod: {resource: "pod"}
+      name:
+        matches: "^(.*)$"
+        as: "http_requests_per_second"
+      metricsQuery: 'avg(<<.Series>>{<<.LabelMatchers>>}) by (<<.GroupBy>>)'
+{{- end }}
+

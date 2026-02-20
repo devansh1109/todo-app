@@ -42,6 +42,17 @@ backend:
     scaleUpPeriodSeconds: 15                   #checks every 15 seconds if a scale up is required or not
     scaleDownStabilizationWindowSeconds: 30    #wait for resource to be below threshold for 30sec and then scales down
     scaleDownPeriodSeconds: 15                 #checks every 15 secodns if a scale down is required or not
+    
+    # Custom metrics for request-based scaling
+    customMetrics:
+      enabled: true
+      targetRequestsPerSecond: 80  #target RPS per pod - scale up if exceeded
+
+# Prometheus Adapter Configuration
+prometheusAdapter:
+  enabled: true
+  prometheusUrl: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+
 frontend:
   enabled: true
   image: todo-frontend:latest

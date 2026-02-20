@@ -5,9 +5,74 @@ require('dotenv').config();
 const pool = require('./db');
 const authRoutes = require('./routes_auth');
 const authenticateToken = require('./auth');
+const promClient = require('prom-client');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+// PROMETHEUS METRICS SETUP
+
+// Create a Registry to register metrics
+const register = new promClient.Registry();
+
+// Add default metrics (CPU, memory, etc.)
+promClient.collectDefaultMetrics({ register });
+
+// Custom metric: HTTP request counter
+const httpRequestCounter = new promClient.Counter({
+  name: 'http_requests_total',
+  help: 'Total number of HTTP requests',
+  labelNames: ['method', 'route', 'status_code'],
+  registers: [register]
+});
+
+
+// Custom metric: HTTP requests per second (rate)
+const httpRequestsPerSecond = new promClient.Gauge({
+  name: 'http_requests_per_second',
+  help: 'Current rate of HTTP requests per second',
+  registers: [register]
+});
+
+// Track request rate
+let requestCount = 0;
+let lastRequestCount = 0;
+setInterval(() => {
+  const currentRate = requestCount - lastRequestCount;
+  httpRequestsPerSecond.set(currentRate);
+  lastRequestCount = requestCount;
+}, 1000);
+
+// Middleware to track metrics
+app.use((req, res, next) => {
+  const start = Date.now();
+  requestCount++;
+  
+  // Capture the original end function
+  const originalEnd = res.end;
+  
+  // Override res.end to capture metrics after response
+  res.end = function(...args) {
+    const duration = (Date.now() - start) / 1000;
+    const route = req.route ? req.route.path : req.path;
+    
+    httpRequestCounter.inc({
+      method: req.method,
+      route: route,
+      status_code: res.statusCode
+    });
+    
+    httpRequestDuration.observe({
+      method: req.method,
+      route: route,
+      status_code: res.statusCode
+    }, duration);
+    
+    // Call the original end function
+    originalEnd.apply(res, args);
+  };
+  
+  next();
+});
 
 // Middleware
 app.use(cors());
@@ -17,6 +82,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // ============================================
 // PUBLIC ROUTES (No Authentication Required)
 // ============================================
+
+// Metrics endpoint for Prometheus
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (error) {
+    res.status(500).end(error);
+  }
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {

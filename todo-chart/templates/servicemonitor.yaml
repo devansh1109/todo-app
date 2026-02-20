@@ -1,0 +1,25 @@
+{{- if .Values.backend.autoscaling.customMetrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-monitor
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: backend
+    release: prometheus  # Important: This label helps Prometheus discover the ServiceMonitor
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  endpoints:
+  #Tells prometheus to scrape the data from /metric api endpoint every 15secs. This endpoint has the requests per second metric
+  - port: http
+    interval: 15s
+    path: /metrics
+    scheme: http
+
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.namespace }}
+{{- end }}
+

@@ -2,10 +2,10 @@
 
 apiVersion: v2
 name: todo-app
-description: A Helm chart for Todo List microservices application with JWT Authentication
+description: A Helm chart for Todo List microservices application with JWT Authentication and added prometheus for http request metric tracking and lowered the checking metrics
 type: application
-version: 2.0.1
-appVersion: "2.0.1"
+version: 3.0.3
+appVersion: "3.0.3"
 keywords:
   - todo
   - microservices
